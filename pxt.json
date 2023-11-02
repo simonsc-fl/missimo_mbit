@@ -1,20 +1,15 @@
 {
-    "name": "mbit",
-    "version": "3.0.5",
-    "description": "Extension for YahBoom m:bit V3.0.5",
+    "name": "missimo",
+    "version": "1.0.0",
+    "description": "Extension for Missimo workshop kit",
     "license": "MIT",
     "dependencies": {
-        "core": "*",
-        "neopixel": "github:lzty634158/pxt-neopixel"
-        
-	
-
+        "core": "*"
     },
     "files": [
         "README.md",
         "main.ts",
         "_locales/en/mbit-strings.json"
-
     ],
     "testFiles": [
         "test.ts"

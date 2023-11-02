@@ -1,6 +1,6 @@
 # mbit
 
-Extension for Yahboom_mbit_en V3.0.4
+Extension for Missimo workshop kit.
 
 ## License
 
@@ -9,4 +9,4 @@ MIT
 ## Supported targets
 
 * for PXT/microbit
-(The metadata above is needed for package search.)
+* make sure that current structure is not altered (metadata required)
