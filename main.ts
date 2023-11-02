@@ -23,7 +23,7 @@ namespace Missimo
 
         // read pulse and convert to cm
         let d = pins.pulseIn(Echo, PulseValue.High, 23200);
-        return 
+        return Math.floor(d / 58.2);
     }
 
     //% blockId=missimo_ultrasonic_robot block="Ultraschall_Distanz_Roboter"
@@ -41,7 +41,7 @@ namespace Missimo
             avg = (0.8 * oldDist) + (0.2 * dist);
             control.waitMicros(10);
         }
-        return avg;
+        return Math.floor(avg);
     }
 
 
