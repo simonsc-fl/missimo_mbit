@@ -3,16 +3,14 @@ Missimo workshop kit extension
 */
 
 
-//% color="#87CEEB" weight=24 icon="\uf1b6"
-namespace Missimo
-{
+//% weight=0 icon="\uf1b6" color=#87CEEB
+namespace Missimo {
     //% blockId=missimo_ultrasonic block="Ultraschall Distanz|Trigger %Trigger|Echo %Echo"
     //% color="#87CEEB"
     //% weight=100
     //% blockGap=10
     //% name.fieldEditor="gridpicker" name.fieldOptions.columns=4
-    export function Ultraschall_Distanz(Trigger: DigitalPin, Echo: DigitalPin): number
-    {
+    export function ultraschall_distanz(Trigger: DigitalPin, Echo: DigitalPin): number {
         // send trigger pulse
         pins.setPull(Trigger, PinPullMode.PullNone);
         pins.digitalWritePin(Trigger, 0);
@@ -31,9 +29,8 @@ namespace Missimo
     //% weight=100
     //% blockGap=10
     //% name.fieldEditor="gridpicker" name.fieldOptions.columns=2
-    export function Ultraschall_Distanz_Roboter(): number
-    {
-        let oldDist = Ultraschall_Distanz(8, 2);
+    export function ultraschall_distanz_roboter(): number {
+        let oldDist = ultraschall_distanz(DigitalPin.P8, DigitalPin.P2);
         let avg = oldDist;
         for (let index = 0; index <= 10; index++)
         {
@@ -43,6 +40,4 @@ namespace Missimo
         }
         return Math.floor(avg);
     }
-
-
 }
