@@ -26,6 +26,9 @@ namespace Missimo {
     const SERVO_PULSE_MAX = 1800;
     const SERVO_PULSE_CENTER = 1500;
 
+    let cur_servo_l_pulse = SERVO_PULSE_CENTER;
+    let cur_servo_r_pulse = SERVO_PULSE_CENTER;
+
     // enums
     export enum ServoType {  
         //% blockId="Servo_Type_Left" block="Servo links"  
@@ -42,6 +45,24 @@ namespace Missimo {
         else {
             return SERVO_R_PIN;
         }
+    }
+
+    // update current pulse and return if updated
+    function update_servo_pulse(sType: ServoType, value: number): boolean {
+        if (sType == ServoType.SERVO_L) {
+            if (cur_servo_l_pulse == value) {
+                return false;
+            }
+
+            cur_servo_l_pulse = value;
+        }
+        else {
+            if (cur_servo_r_pulse == value) {
+                return false;
+            }
+            cur_servo_r_pulse = value;
+        }
+        return true;
     }
 
     //% blockId=missimo_measure_dist
@@ -107,13 +128,19 @@ namespace Missimo {
     //% value.min=-100 value.max=100 value.defl=0
     //% group="Servo"
     export function servo_run(sType: ServoType, value: number): void {
-        let pin = get_servo_pin(sType);
+        
+        let pulseVal = 0;
         if (value == 0) {
-            pins.servoSetPulse(pin, SERVO_PULSE_CENTER);
+            pulseVal = SERVO_PULSE_CENTER;
         }
         else {
-            let mappedVal = pins.map(value, -100, 100, SERVO_PULSE_MIN, SERVO_PULSE_MAX);
-            pins.servoSetPulse(pin, mappedVal);
+            pulseVal = pins.map(value, -100, 100, SERVO_PULSE_MIN, SERVO_PULSE_MAX);
+        }
+
+        // set new pulse only if necessary
+        if (update_servo_pulse(sType, pulseVal)) {
+            let pin = get_servo_pin(sType);
+            pins.servoSetPulse(pin, pulseVal);
         }
     }
 
