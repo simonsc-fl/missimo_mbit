@@ -79,7 +79,7 @@ namespace Missimo {
 
     //% blockId=missimo_measure_dist
     //% block="Messe Distanz in cm||Trigger $trigger|Echo $echo"
-    //% blockHidden=true
+    //% blockHidden=false
     //% color=#25db9c
     //% weight=100
     //% blockGap=10
@@ -113,7 +113,7 @@ namespace Missimo {
     }
 
     //% blockId=missimo_measure_dist_avg
-    //% block="Messe Distanz in cm"
+    //% block="Messe Distanz in cm (gefilteret)"
     //% block.loc.en="measure distance in cm"
     //% jsdoc.loc.en="measure distance in cm"
     //% color=#25db9c
@@ -123,7 +123,7 @@ namespace Missimo {
     export function measure_distance_avg(): number {
         let oldDist = measure_distance(TRIGGER_PIN, ECHO_PIN);
         let avg = oldDist;
-        for (let index = 0; index <= 10; index++) {
+        for (let index = 0; index <= 5; index++) {
             let dist = measure_distance(TRIGGER_PIN, ECHO_PIN);
             if (dist == 0) {
                 continue;
@@ -144,7 +144,6 @@ namespace Missimo {
     //% value.min=-100 value.max=100 value.defl=0
     //% group="Servo"
     export function servo_run(sType: ServoType, value: number): void {
-
         if (value == 0) {
             update_servo_pulse(sType, SERVO_PULSE_CENTER)
         }
