@@ -102,9 +102,9 @@ namespace Missimo {
         // send trigger pulse
         pins.setPull(trigger, PinPullMode.PullNone);
         pins.digitalWritePin(trigger, 0);
-        control.waitMicros(3);
+        control.waitMicros(5);
         pins.digitalWritePin(trigger, 1);
-        control.waitMicros(10);
+        control.waitMicros(15);
         pins.digitalWritePin(trigger, 0);
 
         // read pulse and convert to cm
