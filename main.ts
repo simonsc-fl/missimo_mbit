@@ -49,6 +49,15 @@ namespace Missimo {
 
     // update current pulse and return if updated
     function update_servo_pulse(sType: ServoType, value: number): boolean {
+        // clamp value
+        if (value < SERVO_PULSE_MIN) {
+            value = SERVO_PULSE_MIN;
+        }
+        else if (value > SERVO_PULSE_MAX) {
+            value = SERVO_PULSE_MAX;
+        }
+
+        // update current value
         if (sType == ServoType.SERVO_L) {
             if (cur_servo_l_pulse == value) {
                 return false;
@@ -61,6 +70,10 @@ namespace Missimo {
             }
             cur_servo_r_pulse = value;
         }
+
+        // write to pin
+        let pin = get_servo_pin(sType);
+        pins.servoSetPulse(pin, value);
         return true;
     }
 
@@ -131,19 +144,13 @@ namespace Missimo {
     //% value.min=-100 value.max=100 value.defl=0
     //% group="Servo"
     export function servo_run(sType: ServoType, value: number): void {
-        
-        let pulseVal = 0;
+
         if (value == 0) {
-            pulseVal = SERVO_PULSE_CENTER;
+            update_servo_pulse(sType, SERVO_PULSE_CENTER)
         }
         else {
-            pulseVal = pins.map(value, -100, 100, SERVO_PULSE_MIN, SERVO_PULSE_MAX);
-        }
-
-        // set new pulse only if necessary
-        if (update_servo_pulse(sType, pulseVal)) {
-            let pin = get_servo_pin(sType);
-            pins.servoSetPulse(pin, pulseVal);
+            let pulseVal = pins.map(value, -100, 100, SERVO_PULSE_MIN, SERVO_PULSE_MAX);
+            update_servo_pulse(sType, pulseVal)
         }
     }
 
@@ -155,10 +162,6 @@ namespace Missimo {
     //% sType.defl=ServoType.SERVO_L
     //% group="Servo"
     export function servo_stop(sType: ServoType): void {
-        let pulseVal = SERVO_PULSE_CENTER;
-        if (update_servo_pulse(sType, pulseVal)) {
-            let pin = get_servo_pin(sType);
-            pins.servoSetPulse(pin, pulseVal);
-        }
+        update_servo_pulse(sType, SERVO_PULSE_CENTER);
     }
 }
