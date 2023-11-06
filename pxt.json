@@ -1,18 +1,26 @@
 {
     "name": "missimo",
-    "version": "1.0.0",
-    "description": "Extension for Missimo workshop kit",
+    "version": "0.0.1",
+    "description": "Extension for the Missimo workshop kit avoidance robot.",
     "license": "MIT",
     "dependencies": {
-        "core": "*"
+        "core": "*",
+        "radio": "*",
+        "microphone": "*"
     },
     "files": [
         "README.md",
-        "main.ts",
-        "_locales/en/mbit-strings.json"
+        "main.ts"
     ],
     "testFiles": [
         "test.ts"
     ],
-    "public": true
+    "targetVersions": {
+        "branch": "v6.0.19",
+        "tag": "v6.0.19",
+        "commits": "https://github.com/microsoft/pxt-microbit/commits/19507cc84a19f2a882b2fbe58b4ae3a5cb79cbf9",
+        "target": "6.0.19",
+        "pxt": "9.0.12"
+    },
+    "preferredEditor": "blocksprj"
 }
