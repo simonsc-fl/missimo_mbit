@@ -1,16 +1,51 @@
-﻿/*
-Missimo workshop kit extension
-*/
-
+﻿/**
+ * Functions are mapped to blocks using various macros
+ * in comments starting with %. The most important macro
+ * is "block", and it specifies that a block should be
+ * generated for an **exported** function.
+ */
 
 //% weight=0 icon="\uf1b9" color=#25db9c
 namespace Missimo {
 
-    // hold time at last measurement
+    // rover pin mapping
+    //% enumIdentity="DigitalPin.P8"
+    const TRIGGER_PIN = DigitalPin.P8;
+    //% enumIdentity="DigitalPin.P2"
+    const ECHO_PIN = DigitalPin.P2;
+
+    //% enumIdentity="AnalogPin.P0"
+    const SERVO_L_PIN = AnalogPin.P0;
+    //% enumIdentity="AnalogPin.P1"
+    const SERVO_R_PIN = AnalogPin.P1;
+
+    // variables
     let timeAtLastMeasure = 0;
 
-    //% blockId=missimo_ultrasonic
-    //% block="Messe Distanz|Trigger $trigger|Echo $echo"
+    const SERVO_PULSE_MIN = 1200;
+    const SERVO_PULSE_MAX = 1800;
+    const SERVO_PULSE_CENTER = 1500;
+
+    // enums
+    export enum ServoType {  
+        //% blockId="Servo_Type_Left" block="Servo links"  
+        SERVO_L,
+        //% blockId="Servo_Type_Right" block="Servo rechts"  
+        SERVO_R
+    }
+
+    // map servo type to pin
+    function get_servo_pin(sType: ServoType): AnalogPin {
+        if (sType == ServoType.SERVO_L) {
+            return SERVO_L_PIN;
+        }
+        else {
+            return SERVO_R_PIN;
+        }
+    }
+
+    //% blockId=missimo_measure_dist
+    //% block="Messe Distanz in cm||Trigger $trigger|Echo $echo"
     //% blockHidden=true
     //% color=#25db9c
     //% weight=100
@@ -21,23 +56,22 @@ namespace Missimo {
     //% echo.fieldEditor="gridpicker"
     //% echo.fieldOptions.columns=4
     //% echo.defl=DigitalPin.P2
+    //% group="Sensor"
     export function measure_distance(trigger: DigitalPin, echo: DigitalPin = DigitalPin.P2): number {
-
-        // make sure there is at least 20ms between each measurement
+        
         let now = control.micros();
         let dt = now - timeAtLastMeasure;
-        if (dt < 20000)
-        {
+        if (dt < 20000) {
             control.waitMicros(dt + 100);
         } 
         timeAtLastMeasure = now;
-
+        
         // send trigger pulse
         pins.setPull(trigger, PinPullMode.PullNone);
         pins.digitalWritePin(trigger, 0);
-        control.waitMicros(3);
+        control.waitMicros(2);
         pins.digitalWritePin(trigger, 1);
-        control.waitMicros(10);
+        control.waitMicros(15);
         pins.digitalWritePin(trigger, 0);
 
         // read pulse and convert to cm
@@ -45,23 +79,53 @@ namespace Missimo {
         return Math.floor(d / 58.2);
     }
 
-    //% blockId=missimo_ultrasonic_robot
+    //% blockId=missimo_measure_dist_avg
     //% block="Messe Distanz in cm"
     //% block.loc.en="measure distance in cm"
     //% jsdoc.loc.en="measure distance in cm"
     //% color=#25db9c
     //% weight=100
     //% blockGap=10
+    //% group="Sensor"
     export function measure_distance_avg(): number {
-        let oldDist = measure_distance(DigitalPin.P8, DigitalPin.P2);
+        let oldDist = measure_distance(TRIGGER_PIN, ECHO_PIN);
         let avg = oldDist;
-        for (let index = 0; index <= 10; index++)
-        {
-            let dist = measure_distance(DigitalPin.P8, DigitalPin.P2);
+        for (let index = 0; index <= 10; index++) {
+            let dist = measure_distance(TRIGGER_PIN, ECHO_PIN);
             avg = (0.8 * oldDist) + (0.2 * dist);
             control.waitMicros(10);
         }
         return Math.floor(avg);
     }
 
+    //% blockId=missimo_servo_run
+    //% block="$sType läuft mit $value Prozent"
+    //% color=#25db9c
+    //% weight=100
+    //% blockGap=10
+    //% sType.defl=ServoType.SERVO_L
+    //% value.min=-100 value.max=100 value.defl=0
+    //% group="Servo"
+    export function servo_run(sType: ServoType, value: number): void {
+        let pin = get_servo_pin(sType);
+        if (value == 0) {
+            pins.servoSetPulse(pin, SERVO_PULSE_CENTER);
+        }
+        else {
+            let mappedVal = pins.map(value, -100, 100, SERVO_PULSE_MIN, SERVO_PULSE_MAX);
+            pins.servoSetPulse(pin, mappedVal);
+        }
+    }
+
+    //% blockId=missimo_servo_stop
+    //% block="Stoppe $sType"
+    //% color=#25db9c
+    //% weight=100
+    //% blockGap=10
+    //% sType.defl=ServoType.SERVO_L
+    //% group="Servo"
+    export function servo_stop(sType: ServoType): void {
+        let pin = get_servo_pin(sType);
+        pins.servoSetPulse(pin, SERVO_PULSE_CENTER);
+    }
 }
