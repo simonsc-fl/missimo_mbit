@@ -26,8 +26,8 @@ namespace Missimo {
     const SERVO_PULSE_MAX = 1800;
     const SERVO_PULSE_CENTER = 1500;
 
-    let cur_servo_l_pulse = SERVO_PULSE_CENTER;
-    let cur_servo_r_pulse = SERVO_PULSE_CENTER;
+    let cur_servo_l_pulse = -1;
+    let cur_servo_r_pulse = -1;
 
     // enums
     export enum ServoType {  
@@ -53,7 +53,6 @@ namespace Missimo {
             if (cur_servo_l_pulse == value) {
                 return false;
             }
-
             cur_servo_l_pulse = value;
         }
         else {
@@ -113,6 +112,10 @@ namespace Missimo {
         let avg = oldDist;
         for (let index = 0; index <= 10; index++) {
             let dist = measure_distance(TRIGGER_PIN, ECHO_PIN);
+            if (dist == 0) {
+                continue;
+            }
+
             avg = (0.8 * oldDist) + (0.2 * dist);
             control.waitMicros(10);
         }
