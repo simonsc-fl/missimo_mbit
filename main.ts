@@ -155,7 +155,10 @@ namespace Missimo {
     //% sType.defl=ServoType.SERVO_L
     //% group="Servo"
     export function servo_stop(sType: ServoType): void {
-        let pin = get_servo_pin(sType);
-        pins.servoSetPulse(pin, SERVO_PULSE_CENTER);
+        let pulseVal = SERVO_PULSE_CENTER;
+        if (update_servo_pulse(sType, pulseVal)) {
+            let pin = get_servo_pin(sType);
+            pins.servoSetPulse(pin, pulseVal);
+        }
     }
 }
