@@ -78,7 +78,7 @@ namespace Missimo {
     }
 
     //% blockId=missimo_measure_dist
-    //% block="Messe Distanz in cm||Trigger $trigger|Echo $echo"
+    //% block="Messe Distanz in cm||Trigger $trigger Echo $echo"
     //% blockHidden=false
     //% color=#25db9c
     //% weight=100
@@ -102,9 +102,9 @@ namespace Missimo {
         // send trigger pulse
         pins.setPull(trigger, PinPullMode.PullNone);
         pins.digitalWritePin(trigger, 0);
-        control.waitMicros(2);
+        control.waitMicros(3);
         pins.digitalWritePin(trigger, 1);
-        control.waitMicros(15);
+        control.waitMicros(10);
         pins.digitalWritePin(trigger, 0);
 
         // read pulse and convert to cm
