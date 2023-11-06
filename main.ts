@@ -19,6 +19,16 @@ namespace Missimo {
     //% enumIdentity="AnalogPin.P1"
     const SERVO_R_PIN = AnalogPin.P1;
 
+    //% enumIdentity="AnalogPin.P13"
+    const LED_FRONT_RIGHT = AnalogPin.P13;
+    //% enumIdentity="AnalogPin.P16"
+    const LED_FRONT_LEFT = AnalogPin.P16;
+
+    //% enumIdentity="AnalogPin.P14"
+    const LED_BACK_RIGHT = AnalogPin.P14;
+    //% enumIdentity="AnalogPin.P15"
+    const LED_BACK_LEFT = AnalogPin.P15;
+
     // variables
     let timeAtLastMeasure = 0;
 
@@ -30,11 +40,18 @@ namespace Missimo {
     let cur_servo_r_pulse = -1;
 
     // enums
-    export enum ServoType {  
+    export enum ServoType {
         //% blockId="Servo_Type_Left" block="Servo links"  
         SERVO_L,
         //% blockId="Servo_Type_Right" block="Servo rechts"  
         SERVO_R
+    }
+
+    export enum LedType {
+        //% blockId="Led_Type_Front" block="LED vorne"
+        LED_FRONT,
+        //% blockId="Led_Type_Back" block="LED hinten"
+        LED_BACK
     }
 
     // map servo type to pin
@@ -162,5 +179,41 @@ namespace Missimo {
     //% group="Servo"
     export function servo_stop(sType: ServoType): void {
         update_servo_pulse(sType, SERVO_PULSE_CENTER);
+    }
+
+    //% blockId=missimo_led_on
+    //% block="Schalte $led ein"
+    //% color=#25db9c
+    //% weight=100
+    //% blockGap=10
+    //% sType.defl=LedType.LED_FRONT
+    //% group="LED"
+    export function led_on(led: LedType): void {
+        if (led == LedType.LED_FRONT) {
+            pins.analogWritePin(LED_FRONT_RIGHT, 255);
+            pins.analogWritePin(LED_FRONT_LEFT, 255);
+        }
+        else {
+            pins.analogWritePin(LED_BACK_RIGHT, 255);
+            pins.analogWritePin(LED_BACK_LEFT, 255);
+        }
+    }
+
+    //% blockId=missimo_led_off
+    //% block="Schalte $led aus"
+    //% color=#25db9c
+    //% weight=100
+    //% blockGap=10
+    //% sType.defl=LedType.LED_FRONT
+    //% group="LED"
+    export function led_off(led: LedType): void {
+        if (led == LedType.LED_FRONT) {
+            pins.analogWritePin(LED_FRONT_RIGHT, 0);
+            pins.analogWritePin(LED_FRONT_LEFT, 0);
+        }
+        else {
+            pins.analogWritePin(LED_BACK_RIGHT, 0);
+            pins.analogWritePin(LED_BACK_LEFT, 0);
+        }
     }
 }
